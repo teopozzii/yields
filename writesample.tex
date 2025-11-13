@@ -8,6 +8,10 @@
 \usepackage{hyperref}
 \usepackage{float}
 
+% Word count functionality
+\immediate\write18{texcount -tex -sum -1 \jobname.tex > \jobname.wordcount.tex}
+\newcommand\wordcount{\input{\jobname.wordcount.tex}}
+
 \title{Which Economies Are Most Exposed to a Rise in U.S. Long-Term Yields?}
 \author{Matteo Pozzi}
 \date{\today}
@@ -15,6 +19,10 @@
 \begin{document}
 
 \maketitle
+
+\noindent\textbf{Word Count:} \wordcount{} / 800 words
+
+\vspace{0.3cm}
 
 \section{Introduction}
 
