@@ -26,19 +26,35 @@
 
 \section{Introduction}
 
-Rising U.S. long-term yields create significant spillover effects across global financial markets, with emerging market (EM) economies facing particularly acute vulnerabilities. This analysis examines which economies exhibit the highest exposure to U.S. yield increases through quantitative assessment of transmission channels and empirical evidence. The starting point is an analysis of the UIP condition to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
+Rising U.S. long-term yields create significant spillover effects across global financial markets, with emerging market (EM) economies exhibiting stronger vulnerabilities. This analysis quantitatively examines which economies are most exposed to U.S. yield increases. The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
+
+The idea is not to analyze the impact on a single unique variable (inflation or capital flow) but consider the extent to which 
 
 \section{Theoretical Framework}
+The log-form Uncovered Interest Parity condition states
+\begin{equation}
+USY_t \approx i_t^* + e_t - \mathbb{E}(e_t+1)
+\end{equation}
+where
+\begin{itemize}
+\item $USY_t$ represents some \textbf{net} US long term yield 
+\item $i_t^*$ is the relevant foreign country's counterpart
+\item $e_t$ represents effective USD premium to acquire 1 unit of foreign currency in period $t$
+\end{itemize}
+For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across the pre- and post- shock periods.
+Approximate in logs
 
-The exposure of an economy to U.S. yield changes can be modeled through multiple transmission mechanisms:
+
+We can estimate the expected future exchange rate, combine that with the estimated inflation pass-through
 
 \subsection{Capital Flow Channel}
-The relationship between U.S. yields and EM capital flows follows:
+We may posit a relationship between U.S. yields and EM capital flows such as:
 \begin{equation}
 \Delta CF_{i,t} = \alpha + \beta_1 \Delta USY_{t} + \beta_2 VIX_t + \beta_3 X_{i,t} + \epsilon_{i,t}
 \end{equation}
 
 where $\Delta CF_{i,t}$ represents capital flow changes to country $i$, $\Delta USY_t$ is the change in U.S. 10-year yields, $VIX_t$ captures global risk appetite, and $X_{i,t}$ includes country-specific fundamentals.
+This may evolve in the future but we do not have such data. However, we can imagine capital flows to follow expected changes in the exchange rates to follow arbitrage opportunities. ???
 
 \subsection{Exchange Rate Pass-through}
 Currency depreciation following yield increases affects domestic conditions via:
