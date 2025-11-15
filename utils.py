@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+### SPOT EXCHANGE RATES
 # name ERs as domestic currency needed to buy 1 unit of foreign
 # data source: https://fred.stlouisfed.org/categories/94
 spot_usdeur = pd.read_csv('./data/DEXUSEU.csv', index_col='observation_date')  # Eurozone
@@ -66,3 +67,67 @@ usd_ind = pd.concat([usd_ind_adv, usd_ind_em],axis=1)
 usd_ind = usd_ind.dropna(axis=0,how='any')
 usd_ind = usd_ind.sort_index()
 usd_ind.columns = ['Advanced','Emerging']
+
+### YIELDS
+yields = pd.concat([
+    pd.read_csv('./data/IRLTLT01GBM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','GreatBritain10Y']),
+    pd.read_csv('./data/IRLTLT01AUM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Australia10Y']),
+    pd.read_csv('./data/IRLTLT01CAM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Canada10Y']),
+    pd.read_csv('./data/IRLTLT01CHM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Switzerland10Y']),
+    pd.read_csv('./data/IRLTLT01CLM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Chile10Y']),
+    pd.read_csv('./data/IRLTLT01DEM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Germany10Y']),
+    pd.read_csv('./data/IRLTLT01ESM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Spain10Y']),
+    pd.read_csv('./data/IRLTLT01EZM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Eurozone10Y']),
+    pd.read_csv('./data/IRLTLT01FRM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','France10Y']),
+    pd.read_csv('./data/IRLTLT01ILM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Israel10Y']),
+    pd.read_csv('./data/IRLTLT01JPM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Japan10Y']),
+    pd.read_csv('./data/IRLTLT01KRM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','SouthKorea10Y']),
+    pd.read_csv('./data/IRLTLT01MXM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Mexico10Y']),
+    pd.read_csv('./data/IRLTLT01NZM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','NewZealand10Y']),
+    pd.read_csv('./data/IRLTLT01SEM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','Sweden10Y']),
+    pd.read_csv('./data/IRLTLT01USM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','UnitedStates10Y']),
+    pd.read_csv('./data/IRLTLT01ZAM156N.csv', index_col='observation_date', skiprows=[0], names=['observation_date','SouthAfrica10Y']),
+], axis=1)
+yields = yields.sort_index()
+yields = yields.dropna(how='any',axis=0)
+
+### GDP
+OECD_CODE_MAPPING = {
+    "GBR" : "GB",
+    "CAN" : "CA",
+    "AUS" : "AU",
+    "CHE" : "CH",
+    "KOR" : "KR",
+    "NZL" : "NZ",
+    "ZAF" : "ZA",
+    "SWE" : "SE",
+    "JPN" : "JP",
+    "DEU" : "DE",
+    "USA" : "US",
+    "MEX" : "MX",
+    "CHL" : "CL",
+    "ESP" : "ES",
+    "FRA" : "FR",
+    "ISR" : "IL"
+}
+
+CC_NAME_MAPPING = {
+    "GB" : "Great Britain",
+    "AU" : "Australia",
+    "CA" : "Canada",
+    "CH" : "Switzerland",
+    "CL" : "Chile",
+    "DE" : "Germany",
+    "ES" : "Spain",
+    "EZ" : "Eurozone",
+    "I9" : "Eurozone",
+    "FR" : "France",
+    "IL" : "Israel",
+    "JP" : "Japan",
+    "KR" : "South Korea",
+    "MX" : "Mexico",
+    "NZ" : "New Zealand",
+    "SE" : "Sweden",
+    "US" : "United States",
+    "ZA" : "South Africa",
+}
