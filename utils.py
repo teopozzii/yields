@@ -215,13 +215,10 @@ url = HOST_URL + agency_identifier + "," + \
     "format=csvfilewithlabels"
 
 resp = requests.get(url=url)
-inflation = pd.read_csv(StringIO(resp.text))
-
-# Only keep observations that report the inflation as a net percentage
-inflation = inflation[inflation['UNIT_MEASURE']=='PA']
+priceleveldata = pd.read_csv(StringIO(resp.text))
 
 # Remove unnecessary measures
-inflation.drop(columns=[
+priceleveldata.drop(columns=[
     'STRUCTURE','STRUCTURE_ID','STRUCTURE_NAME',
     'ACTION','FREQ','Frequency of observation','ADJUSTMENT','Adjustment',
     'UNIT_MULT', 'Unit multiplier',
@@ -229,16 +226,34 @@ inflation.drop(columns=[
     "DURABILITY","Durability",
     "BASE_PER", "Base period",
     "METHODOLOGY", "MEASURE", "Measure", "Methodology",
-    "Unit of measure", "UNIT_MEASURE",
+    "Unit of measure",
     "EXPENDITURE", "Expenditure",
     "TRANSFORMATION", "Transformation",
     'Time period', 'Observation value',
     'OBS_STATUS', 'Observation status',
 ], inplace=True)
 
+# Only keep observations that report the inflation as a net percentage
+inflation = priceleveldata[priceleveldata['UNIT_MEASURE']=='PA']
+inflation.drop(columns="UNIT_MEASURE",inplace=True)
+
 inflation['REF_AREA'] = inflation['REF_AREA'].map(OECD_CODE_MAPPING)
 inflation = inflation[~(inflation['REF_AREA']).isna()]
 inflation = inflation.set_index('TIME_PERIOD',drop=True).sort_index()
+inflation.drop(columns='Reference area', inplace=True)
+inflation.rename(columns={'OBS_VALUE': 'OBS_VALUE_inflation'}, inplace=True)
+inflation.index = inflation.index.astype(str) + '-01'
+
+### PRICE INDICES
+# Only keep observations that report the inflation as a net percentage
+price_indices = priceleveldata[priceleveldata['UNIT_MEASURE']=='IX']
+price_indices.drop(columns="UNIT_MEASURE",inplace=True)
+price_indices['REF_AREA'] = price_indices['REF_AREA'].map(OECD_CODE_MAPPING)
+price_indices = price_indices[~(price_indices['REF_AREA']).isna()]
+price_indices = price_indices.set_index('TIME_PERIOD',drop=True).sort_index()
+price_indices.drop(columns='Reference area', inplace=True)
+price_indices.rename(columns={'OBS_VALUE': 'OBS_VALUE_price'}, inplace=True)
+price_indices.index = price_indices.index.astype(str) + '-01'
 
 ### ECONOMY OPENNESS MEASURES
 
