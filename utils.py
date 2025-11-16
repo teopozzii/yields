@@ -3,6 +3,26 @@ import numpy as np
 import requests
 from io import StringIO
 
+### Functions
+# Need to convert quarterly notation to day of month in gdp df
+def convert_quarterly_to_monthly(quarter : str) -> str:
+    qmap = {
+        'Q1' : "04-01",
+        'Q2' : "07-01",
+        'Q3' : "10-01",
+        'Q4' : "01-01",
+    }
+    return quarter[:5] + qmap[quarter[5:]]
+
+def convert_monthly_to_quarterly(monthly : str) -> str:
+    mmap = {
+        '01-01' : "Q4",
+        '04-01' : "Q1",
+        '07-01' : "Q2",
+        '10-01' : "Q3",
+    }
+    return monthly[:5] + mmap[monthly[5:]]
+
 ### CC mappings
 OECD_CODE_MAPPING = {
     "GBR" : "GB",
@@ -135,10 +155,6 @@ yields = yields.sort_index()
 yields = yields.dropna(how='any',axis=0)
 
 ### GDP
-### GDP
-import pandas as pd
-import requests
-from io import StringIO
 
 HOST_URL = "https://sdmx.oecd.org/public/rest/data/"
 agency_identifier = "OECD.SDD.NAD"
@@ -171,3 +187,65 @@ gdp = gdp.drop(columns=[
     'Confidentiality status', 'DECIMALS', 'Decimals', 'OBS_STATUS',
     'Observation status','Unit multiplier','Price reference year'
 ])
+
+# Remap REF_AREA to match 2-letter convention + make the time period in monthly format
+gdp['REF_AREA'] = gdp['REF_AREA'].map(OECD_CODE_MAPPING)
+gdp['Country'] = gdp['REF_AREA'].map(CC_NAME_MAPPING)
+gdp = gdp[~(gdp["REF_AREA"]).isna()]
+gdp['TIME_PERIOD'] = gdp['TIME_PERIOD'].apply(lambda x : convert_quarterly_to_monthly(x))
+gdp = gdp[gdp['Price base'] == 'Current prices']
+gdp.rename(columns={'OBS_VALUE': 'OBS_VALUE_gdp'}, inplace=True)
+
+### DERIVE GROWTH RATES
+gdp_growth = gdp.pivot_table(
+    index='TIME_PERIOD',
+    columns='REF_AREA',
+    values='OBS_VALUE_gdp'
+).dropna(how='any',axis=0).sort_index()
+gdp_growth = gdp_growth.pct_change().dropna(how='any',axis=0) * 100
+
+gdp_growth = pd.melt(gdp_growth.reset_index(),id_vars='TIME_PERIOD').set_index('TIME_PERIOD',drop=True)
+gdp_growth.columns = ['REF_AREA','OBS_VALUE_growth']
+
+### INFLATION
+# Data available monthly for all countries except Australia and New Zealand (quarterly).
+agency_identifier = "OECD.SDD.TPS"
+url = HOST_URL + agency_identifier + "," + \
+    "DSD_PRICES@DF_PRICES_ALL,1.0/.M.N.CPI.._T.N.GY+_Z?" + \
+    "format=csvfilewithlabels"
+
+resp = requests.get(url=url)
+inflation = pd.read_csv(StringIO(resp.text))
+
+# Only keep observations that report the inflation as a net percentage
+inflation = inflation[inflation['UNIT_MEASURE']=='PA']
+
+# Remove unnecessary measures
+inflation.drop(columns=[
+    'STRUCTURE','STRUCTURE_ID','STRUCTURE_NAME',
+    'ACTION','FREQ','Frequency of observation','ADJUSTMENT','Adjustment',
+    'UNIT_MULT', 'Unit multiplier',
+    "DECIMALS", "Decimals",
+    "DURABILITY","Durability",
+    "BASE_PER", "Base period",
+    "METHODOLOGY", "MEASURE", "Measure", "Methodology",
+    "Unit of measure", "UNIT_MEASURE",
+    "EXPENDITURE", "Expenditure",
+    "TRANSFORMATION", "Transformation",
+    'Time period', 'Observation value',
+    'OBS_STATUS', 'Observation status',
+], inplace=True)
+
+inflation['REF_AREA'] = inflation['REF_AREA'].map(OECD_CODE_MAPPING)
+inflation = inflation[~(inflation['REF_AREA']).isna()]
+inflation = inflation.set_index('TIME_PERIOD',drop=True).sort_index()
+
+### ECONOMY OPENNESS MEASURES
+
+
+### Summary on countries analyzed -- given the objective of the exercise
+print('Yields are present for the following countries: ')
+print(', '.join(list(yields.columns.map(
+    {v: k for k, v in CC_NAME_MAPPING.items()}
+))))
+print('Only considering these ones in the analysis (data on other countries will be dropped.)')
