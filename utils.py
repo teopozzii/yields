@@ -256,7 +256,12 @@ price_indices.rename(columns={'OBS_VALUE': 'OBS_VALUE_price'}, inplace=True)
 price_indices.index = price_indices.index.astype(str) + '-01'
 
 ### ECONOMY OPENNESS MEASURES
-
+url = HOST_URL + agency_identifier + "," + \
+    "DSD_BOP@DF_TIS,1.0/..S...A.USD_EXC.?" + \
+    "format=csvfilewithlabels"
+resp = requests.get(url)
+trade_services = pd.read_csv(StringIO(resp.text))
+goods_services = pd.read_csv('./data/IMF_IMTS.csv')
 
 ### Summary on countries analyzed -- given the objective of the exercise
 print('Yields are present for the following countries: ')
