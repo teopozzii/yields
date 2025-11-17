@@ -25,52 +25,78 @@
 
 \vspace{0.3cm}
 
-\section{Introduction and Theoretical Framework}
-The United States still hold much weight in shaping the destinies of competing economies around the world. Spreads with their sovereign yields determine capital flows, and in turn financing capabilities and real economic expansions or contractions by influencing consumption and investment patterns. Economies who are more exposed to swings in currency trade with the US exhibit stronger vulnerabilities; this is particularly the case for emerging markets (EM).
+\section{Introduction and theoretical framework}
+The United States still hold much weight in shaping the destinies of competing economies around the world. Spreads with their sovereign yields determine capital flows, and in turn financing capabilities and real economic expansions or contractions by influencing consumption and investment patterns. Economies who are more exposed to swings in currency trade with the US exhibit stronger vulnerabilities; this phenomenon has been found to be particularly salient for emerging markets (EM).
 
-The key channel by which long-term yields influence other economies is the effect they have on bilateral exchange rates. The log-form Uncovered Interest Parity condition states
+The present quantitative analysis attempts to delve deeper into the topic. It relies on OECD and IMF for trade data; data on exchange rates and sovereign yield spreads was retrieved from the Federal Reserve's
+\href{https://fred.stlouisfed.org/}{\textcolor{blue}{\underline{FRED}}}.
+An intense and nontrivial data processing effort was undertaken to align sources and reporting formats.\footnote{For datasets for which portals offered this possibility, data was retrieved through API queries, with the added benefit of transparency. The queries can be found in the source code of the analysis, within the
+\href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{pseudo-Online Appendix}}}.}
+
+\subsection{Transmission channels for exposure to US yields}
+For the present analysis, let's ignore sovereign default risk and denomination risks, assumed constant and negligible across periods. Figure \ref{fig:spreads} displays sovereign long-term yield spreads against the US.
+
+The key channel by which long-term yields influence other economies is the effect they have on bilateral exchange rates. This is implied by interest rates differentials; the log-form Uncovered Interest Parity condition states
 \begin{equation}
 USY_t \approx i_t^* + \mathbb{E}(e_t+1) - e_t 
 \end{equation}
-where
-\begin{itemize}
-\item $USY_t$ represents some \textbf{net} US long term yield 
-\item $i_t^*$ is the relevant foreign country's counterpart
-\item $e_t$ represents effective USD premium to acquire 1 unit of foreign currency in period $t$
-\end{itemize}
-For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across periods. Let's begin by plotting spreads against the US long-term yield.\footnote{Sources for this work include the OECD and IMF Data Explorer; queries used to retrieve the data can be found in the 
-\href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{pseudo-Online Appendix}}}.
-Other data was retrieved from
-\href{https://fred.stlouisfed.org/}{\textcolor{blue}{\underline{FRED}}}
-and the
-\href{https://data.ecb.europa.eu/data/datasets/IDCM}{\textcolor{blue}{\underline{European Data Portal}}}.} These can be seen in Figure \ref{fig:spreads}.
+where $USY_t$ represents some \textbf{net} US long term yield, $i_t^*$ is the relevant foreign country's counterpart, and $e_t$ represents the effective USD premium required to acquire 1 unit of foreign currency in period $t$. It is important to recall this condition shall not be expected to hold in the data\footnote{We ignore for brevity the so-called Forward Premium Puzzle, which historically showed UIP often doesn't hold.} as it pertains to uncertain environments rather than certain, \emph{backward-looking} ones. Notwithstanding, for given expectations we may suppose spot FX markets will react to sovereign yield spread deviations.
 
 \begin{figure}\label{fig:spreads}
 \centering \includegraphics[scale=0.5]{assets/yield_spreads.png}
 \end{figure}
 
-In theory, exchange rates may shape terms of trade between countries and influence imports and exports among countries. We can also verify whether this is the case.
+\begin{figure}\label{fig:spreads2}
+\centering \includegraphics[scale=0.5]{assets/yield_spreads2.png}
+\end{figure}
+
+In turn, theory suggests exchange rates may shape terms of trade between countries and influence the trade balance. In practice, this depends on the specific links an economy has with the United States. The 2013 US ``taper tantrum'' provided quantitative evidence (see e.g. Sahay \textit{et al.}, 2014) that EM economies tend to be more vulnerable to US monetary tightenings: volatility increases, and exchange rates and asset prices react more sharply. Results showed the prospect of rate increases in U.S. 10-year yields translated to up to 300bp widenings in EM sovereign spreads for the most vulnerable economies. 
+
+This is consistent \textit{inter alia} with Dornbusch's (1976) now classic theory of \textit{Exchange Rate Overshooting}: a notable implication of the latter is that countries whose trade depends more heavily on the US as a partner, and who have greater financial exposure, will suffer more. We may tentatively explore data on trade patterns to verify whether the above deduction is broadly true. Unfortunately, insufficient granularity, low alignment, and widespread methodological inconsistencies across publicly available datasets make comparison more complex: we must avoid aggregating datasets built under heavily different assumptions, and accept limits imposed by asymmetric metadata encoding. Nevertheless, some aggregations offer significant information despite forcing us to restrict our attention to a limited number of countries.
+
+For instance, it can be seen in the data that years of USD appreciation tended to correlate with lower trade openness for market partners, both for exports and imports. This has particularly been the case for economies which exhibit a stronger penetration of the US economy in their trade basket.
+
+\begin{figure}\label{fig:uspenetrationtrade}
+\centering \includegraphics[scale=0.5]{assets/uspenetrationtrade.png}
+\end{figure}
+
+This is the case e.g. for Mexico, see Figure \ref{fig:er-shape-tradebalance}. %missing
+
+%\begin{figure}\label{fig:er-shape-tradebalance}
+%\centering \includegraphics[scale=0.5]{assets/tradebalance.png}
+%\end{figure}
 
 %% insert graph plotting nominal and real ERs vs imports and exports
+
+Interestingly, a first exploratory plot of FRED data (Figure \ref{fig:spreads2}) shows USD has on average appreciated more sharply against EMs than vis-à-vis advanced economies over the past two decades. How much of this differential may be attributed to yield spreads?
 
 The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
 
 We can estimate the expected future exchange rate, combine that with the estimated inflation pass-through
 
-\subsection{Estimation}
+
+Countries are more exposed if
+\begin{itemize}
+\item Hold insufficient foreign exchange reserves, especially if the ratio is $\leq 100\%$ of short-term external debt
+\item If local currency bond markets are heavily USD-dependent
+\item Have relevant current account deficits ($>3\%$ of GDP)
+\item Do not have sufficiently credible flexible ER regimes
+\end{itemize}
+
+\section{Quantitative analysis}
 We begin with some very simple regressions
 $$
 \left( \dot{y}_t, \ \pi_t \right) = x_t \beta + FE_c + \varepsilon_t
 $$
 
-with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect. We also experiment with interaction terms to verify whether the reduced form relationship varies by country and this is significant. We present results in Figures \ref{fig:result_base1} and \ref{fig:result_base2}.
+with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect. We also experiment with interaction terms to verify whether the reduced form relationship varies by country and this is significant. We present results in Figures \ref{fig:result_base1} and \ref{fig:result_base2}. %currently missing
 
-\begin{figure}\label{fig:result_base1}
-\centering \includegraphics[scale=0.5]{assets/growth_fe_interact_CC.png}
-\end{figure}
-\begin{figure}\label{fig:result_base2}
-\centering \includegraphics[scale=0.5]{assets/inflation_fe_interact_CC.png}
-\end{figure}
+%\begin{figure}\label{fig:result_base1}
+%\centering \includegraphics[scale=0.5]{assets/growth_fe_interact_CC.png}
+%\end{figure}
+%\begin{figure}\label{fig:result_base2}
+%\centering \includegraphics[scale=0.5]{assets/inflation_fe_interact_CC.png}
+%\end{figure}
 
 The interested reader can consult the pseudo-``Online Appendix'' to the analysis \href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{here}}}.
 
@@ -99,12 +125,6 @@ where:
 \item $DEBT_i$ = USD-denominated debt share
 \end{itemize}
 
-\subsection{Interest Rate Sensitivity}
-The elasticity of domestic borrowing costs to U.S. yields:
-\begin{equation}
-\frac{\partial r_{i,t}}{\partial USY_t} = \delta_0 + \delta_1 \cdot RATING_i + \delta_2 \cdot LIQUID_i
-\end{equation}
-
 Higher sensitivity indicates greater exposure to U.S. monetary tightening.
 
 \section{Empirical Analysis}
@@ -126,28 +146,14 @@ Based on quantitative assessment using 2023 data:
 \item \textbf{Brazil}: Large domestic bond market with foreign participation, currency volatility
 \end{itemize}
 
-\subsection{Quantitative Evidence}
-
-Historical analysis of the 2013 "taper tantrum" and 2022 Fed tightening cycle reveals:
-
-\begin{equation}
-\beta_{sensitivity} = \frac{\Delta Spread_{i}}{\Delta USY} \approx 1.2-2.5 \text{ for high-exposure EMs}
-\end{equation}
-
-This indicates that a 100bp increase in U.S. 10-year yields typically translates to 120-250bp widening in EM sovereign spreads for the most vulnerable economies.
-
-\section{Policy Implications}
-
-Countries can mitigate exposure through:
-\begin{itemize}
-\item Building foreign exchange reserves: Target ratio $\geq 100\%$ of short-term external debt
-\item Developing local currency bond markets to reduce USD dependency
-\item Maintaining current account surpluses or manageable deficits ($<3\%$ of GDP)
-\item Implementing flexible exchange rate regimes with credible inflation targeting
-\end{itemize}
-
 \section{Conclusion}
 
-Economies with high external financing needs, significant USD-denominated debt, and weak fundamentals face the greatest exposure to rising U.S. yields. Turkey, Argentina, and South Africa emerge as particularly vulnerable, while countries with stronger external positions and deeper local markets demonstrate greater resilience. Policymakers should prioritize building buffers and reducing structural vulnerabilities before the next U.S. tightening cycle.
+Economies with high external financing needs, significant USD-denominated debt, and weak fundamentals face the greatest exposure to rising U.S. yields. Turkey, Argentina, and South Africa emerge as particularly vulnerable, while countries with stronger external positions and deeper local markets demonstrate greater resilience.
+
+\section{References}
+
+Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal of Political Economy, 84}(6), pp. 1161-1176. doi:\href{https://doi.org/10.1086/260506}{10.1086/260506}\\
+
+\noindent Sahay, R., Arora, V. B., Arvanitis, A. V., Faruqee, H., N'Diaye, P. M., \& Mancini Griffoli, T. (2014). Emerging Market Volatility: Lessons from The Taper Tantrum. \textit{Staff Discussion Notes, 2014}(009), A001. doi:\href{https://doi.org/10.5089/9781498318204.006}{10.5089/9781498318204.006}
 
 \end{document}
