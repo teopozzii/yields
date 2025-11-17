@@ -14,6 +14,7 @@ def convert_quarterly_to_monthly(quarter : str) -> str:
     }
     return quarter[:5] + qmap[quarter[5:]]
 
+
 def convert_monthly_to_quarterly(monthly : str) -> str:
     mmap = {
         '01-01' : "Q4",
@@ -23,8 +24,19 @@ def convert_monthly_to_quarterly(monthly : str) -> str:
     }
     return monthly[:5] + mmap[monthly[5:]]
 
+
+def convert_monthly_IMF(date):
+    mmap = {
+        'M01' : '02-01', 'M02' : '03-01', 'M03' : '04-01',
+        'M04' : '05-01', 'M05' : '06-01', 'M06' : '07-01',
+        'M07' : '08-01', 'M08' : '09-01', 'M09' : '10-01',
+        'M10' : '11-01', 'M11' : '12-01', 'M12' : '01-01',
+    }
+    return date[:5] + mmap[date[5:]]
+
+
 ### CC mappings
-OECD_CODE_MAPPING = {
+OECD_CODE_MAPPING = { # actually refers to some IMF codes as well
     "GBR" : "GB",
     "CAN" : "CA",
     "AUS" : "AU",
@@ -41,6 +53,8 @@ OECD_CODE_MAPPING = {
     "ESP" : "ES",
     "FRA" : "FR",
     "ISR" : "IL",
+    "SGP" : "SG", # IMF
+    "SGN" : "SG",
     "G163": "I9",
     "G998": "EU"
 }
@@ -103,31 +117,36 @@ usd_ind_em  = pd.read_csv('./data/DTWEXEMEGS.csv', index_col='observation_date')
 usd_ind_adv = pd.read_csv('./data/DTWEXAFEGS.csv', index_col='observation_date')
 
 allspotsinusd = pd.concat([
-    spot_eurusd,
-    spot_ukgusd,
-    spot_alnusd,
-    spot_nzdusd,
-    spot_yenusd,
-    spot_chyusd,
-    spot_cadusd,
-    spot_wonusd,
-    spot_mxnusd,
-    spot_bzrusd,
-    spot_dkkusd,
-    spot_hkdusd,
-    spot_inrusd,
-    spot_myrusd,
-    spot_nokusd,
-    spot_sekusd,
-    spot_chfusd,
-    spot_sgdusd,
-    spot_lkrusd,
-    spot_zarusd,
-    spot_twdusd,
-    spot_thbusd,
+    spot_eurusd, # I9
+    spot_ukgusd, # GB
+    spot_alnusd, # AU
+    spot_nzdusd, # NZ
+    spot_yenusd, # JP
+    spot_chyusd, # CN
+    spot_cadusd, # CA
+    spot_wonusd, # KR
+    spot_mxnusd, # MX
+    spot_bzrusd, # BR
+    spot_dkkusd, # DK
+    spot_hkdusd, # HK
+    spot_inrusd, # IN
+    spot_myrusd, # MY
+    spot_nokusd, # NO
+    spot_sekusd, # SE
+    spot_chfusd, # CH
+    spot_sgdusd, # SG
+    spot_lkrusd, # LK
+    spot_zarusd, # ZA
+    spot_twdusd, # TW
+    spot_thbusd, # TH
 ],axis=1)
 allspotsinusd = allspotsinusd.dropna(axis=0,how='any')
 allspotsinusd = allspotsinusd.sort_index()
+allspotsinusd.columns = [
+    'I9', 'UK', 'AU', 'NZ', 'JP', 'CN', 'CA', 'KR', 
+    'MX', 'BR', 'DK', 'HK', 'IN', 'MY', 'NO', 'SE',
+    'CH', 'SG', 'LK', 'ZA', 'TW', 'TH'
+]
 usd_ind = pd.concat([usd_ind_adv, usd_ind_em],axis=1)
 usd_ind = usd_ind.dropna(axis=0,how='any')
 usd_ind = usd_ind.sort_index()
@@ -195,7 +214,6 @@ url = HOST_URL + agency_identifier + "," + \
     f"startPeriod={start_period}&" + \
     "dimensionAtObservation=AllDimensions&" \
     "format=csvfilewithlabels"
-
 resp = requests.get(url=url)
 gdp = pd.read_csv(StringIO(resp.text))
 print(f"""There are in total
@@ -288,7 +306,66 @@ url = HOST_URL + agency_identifier + "," + \
     "format=csvfilewithlabels"
 resp = requests.get(url)
 trade_services = pd.read_csv(StringIO(resp.text))
+trade_services.drop(columns=[
+    'STRUCTURE', "STRUCTURE_ID", "STRUCTURE_NAME", "ACTION",
+    "MEASURE", "Measure", "Currency", "CURRENCY", "DECIMALS", "Decimals",
+    "FS_ENTRY", "Flow or stock entry", # they are all transactions
+    "FREQ", "Frequency of observation", # all annual
+    "UNIT_MEASURE", "Unit of measure", # all USD exc converted
+    "ADJUSTMENT", "Adjustment", # all unadjusted
+    "UNIT_MULT", "Unit multiplier", # all millions
+    "OBS_STATUS", "Observation status", # not too relevant
+    "Observation value", "Time period", # not used
+], inplace=True)
+trade_services = trade_services.replace('Balance (revenue minus expenditure)', 'Net balance')
+trade_services.set_index('TIME_PERIOD', inplace=True)
+trade_services["REF_AREA"] = trade_services["REF_AREA"].map(OECD_CODE_MAPPING)
+trade_services["COUNTERPART_AREA"] = trade_services["COUNTERPART_AREA"].map(OECD_CODE_MAPPING)
+trade_services = trade_services[~trade_services["REF_AREA"].isna() & ~trade_services["COUNTERPART_AREA"].isna()]
+
 trade_goods = pd.read_csv('./data/IMF_IMTS.csv')
+# Keep exports FOB and imports CIF
+# (standard combination, only CIF considers freight costs)
+trade_goods = trade_goods[trade_goods["INDICATOR"].isin([
+    'Exports of goods, Free on board (FOB), US dollar',
+    'Imports of goods, Cost insurance freight (CIF), US dollar',
+    'Trade balance goods, US dollar'
+])]
+trade_goods = trade_goods[trade_goods['FREQUENCY.ID']=='M'] # keep most granular freq
+trade_goods['TIME_PERIOD'] = trade_goods['TIME_PERIOD'].apply(
+    lambda date : convert_monthly_IMF(date) # convert dates
+)
+# Rename countries
+trade_goods["COUNTRY.ID"] = trade_goods["COUNTRY.ID"].map(OECD_CODE_MAPPING)
+trade_goods["COUNTERPART_COUNTRY.ID"] = trade_goods["COUNTERPART_COUNTRY.ID"].map(OECD_CODE_MAPPING)
+trade_goods.rename(columns={
+    'COUNTRY.ID' : 'REF_AREA',
+    'COUNTERPART_COUNTRY.ID' : 'CNT_AREA',
+},inplace=True)
+# Let's drop the scale columns, they are NaN only for AU
+# and it seems that the scale is in order.
+# Compare
+# 1
+# trade_goods.loc[(trade_goods['SCALE'] != 'Millions')& (trade_goods['COUNTERPART_COUNTRY'] == 'Euro Area (EA)')].sort_values(by='TIME_PERIOD')
+# # 2
+# trade_goods.loc[
+#     (trade_goods['SCALE'] == 'Millions') & (trade_goods['COUNTRY'] == 'Australia') & (trade_goods['COUNTERPART_COUNTRY'] == 'Euro Area (EA)') & (trade_goods['INDICATOR'] == 'Exports of goods, Free on board (FOB), US dollar')
+#     ].sort_values(by='TIME_PERIOD')
+# We could later check in case we spot large inconsistencies
+# or if numbers don't square with the gdp figures
+# trade_goods.loc[
+#     trade_goods['SCALE'].isna(), 'OBS_VALUE'
+# ] = trade_goods.loc[trade_goods['SCALE'].isna(), 'OBS_VALUE'] / 1e6
+trade_goods.drop(columns=[
+    'FREQUENCY', 'FREQUENCY.ID',
+    "SCALE", "SCALE.ID",  
+], inplace=True)
+trade_goods["INDICATOR"] = trade_goods["INDICATOR"].map({
+    'Exports of goods, Free on board (FOB), US dollar' : 'Exports FOB (USD)',
+    'Imports of goods, Cost insurance freight (CIF), US dollar' : 'Imports CIF (USD)',
+    'Trade balance goods, US dollar' : "Trade balance (USD)"
+})
+trade_goods.set_index('TIME_PERIOD', inplace=True)
 
 # Could also try with the IMF API, but the query structure is a bit more complex
 # HOST_URL_IMF = "https://api.imf.org/external/sdmx/3.0/data/"

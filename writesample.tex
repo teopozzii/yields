@@ -5,7 +5,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{natbib}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{float}
 \usepackage{xcolor}
 
@@ -38,7 +38,20 @@ where
 \item $i_t^*$ is the relevant foreign country's counterpart
 \item $e_t$ represents effective USD premium to acquire 1 unit of foreign currency in period $t$
 \end{itemize}
-For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across periods. Let's see if it holds in the data.
+For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across periods. Let's begin by plotting spreads against the US long-term yield.\footnote{Sources for this work include the OECD and IMF Data Explorer; queries used to retrieve the data can be found in the 
+\href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{pseudo-Online Appendix}}}.
+Other data was retrieved from
+\href{https://fred.stlouisfed.org/}{\textcolor{blue}{\underline{FRED}}}
+and the
+\href{https://data.ecb.europa.eu/data/datasets/IDCM}{\textcolor{blue}{\underline{European Data Portal}}}.} These can be seen in Figure \ref{fig:spreads}.
+
+\begin{figure}\label{fig:spreads}
+\centering \includegraphics[scale=0.5]{assets/yield_spreads.png}
+\end{figure}
+
+In theory, exchange rates may shape terms of trade between countries and influence imports and exports among countries. We can also verify whether this is the case.
+
+%% insert graph plotting nominal and real ERs vs imports and exports
 
 The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
 
@@ -50,9 +63,16 @@ $$
 \left( \dot{y}_t, \ \pi_t \right) = x_t \beta + FE_c + \varepsilon_t
 $$
 
-with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect.
+with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect. We also experiment with interaction terms to verify whether the reduced form relationship varies by country and this is significant. We present results in Figures \ref{fig:result_base1} and \ref{fig:result_base2}.
 
-The interested reader can consult the pseudo-``online appendix'' to the analysis \href{https://doi.org/10.82029/2025014}{\textcolor{blue}{\underline{here}}}.
+\begin{figure}\label{fig:result_base1}
+\centering \includegraphics[scale=0.5]{assets/growth_fe_interact_CC.png}
+\end{figure}
+\begin{figure}\label{fig:result_base2}
+\centering \includegraphics[scale=0.5]{assets/inflation_fe_interact_CC.png}
+\end{figure}
+
+The interested reader can consult the pseudo-``Online Appendix'' to the analysis \href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{here}}}.
 
 \section{AI SLOP}
 \subsection{Exchange Rate Pass-through}
