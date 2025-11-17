@@ -221,6 +221,12 @@ gdp = pd.read_csv(StringIO(resp.text))
 print(f"""There are in total
 {(gdp['UNIT_MULT'] != 6).sum()} series which do not have
 the 6 digit unit multiplier.""")
+# Select only nominal GDP series
+gdp = gdp[
+    (gdp["SECTOR"]=="S1") & 
+    (gdp["TRANSACTION"]=="B1GQ") & 
+    (gdp["Price base"]=="Current prices"
+)]
 gdp = gdp.drop(columns=[
     'STRUCTURE','STRUCTURE_ID','STRUCTURE_NAME',
     'ACTION','FREQ','Frequency of observation','ADJUSTMENT','Adjustment',
@@ -234,13 +240,17 @@ gdp = gdp.drop(columns=[
     'Confidentiality status', 'DECIMALS', 'Decimals', 'OBS_STATUS',
     'Observation status','Unit multiplier','Price reference year'
 ])
+gdp = gdp[[
+    "REF_AREA",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+]]
 
 # Remap REF_AREA to match 2-letter convention + make the time period in monthly format
 gdp['REF_AREA'] = gdp['REF_AREA'].map(OECD_CODE_MAPPING)
 gdp['Country'] = gdp['REF_AREA'].map(CC_NAME_MAPPING)
 gdp = gdp[~(gdp["REF_AREA"]).isna()]
 gdp['TIME_PERIOD'] = gdp['TIME_PERIOD'].apply(lambda x : convert_quarterly_to_monthly(x))
-gdp = gdp[gdp['Price base'] == 'Current prices']
 gdp.rename(columns={'OBS_VALUE': 'OBS_VALUE_gdp'}, inplace=True)
 
 ### DERIVE GROWTH RATES
