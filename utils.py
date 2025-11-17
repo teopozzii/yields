@@ -55,9 +55,10 @@ OECD_CODE_MAPPING = { # actually refers to some IMF codes as well
     "ISR" : "IL",
     "SGP" : "SG", # IMF
     "SGN" : "SG",
-    "G163": "I9",
-    "G998": "EU",
-    "G001": "W1", # IMF code
+    "G163": "I9", # IMF
+    "G998": "EU", # IMF
+    "EU27_2020" : "EU",
+    "G001": "W1", # IMF
     "W"   : "W1", # denotes all rest of the world
 }
 
