@@ -165,6 +165,20 @@ yields['REF_AREA'] = yields['variable'].map(
 )
 yields.columns = ['Country', 'OBS_VALUE_yield', 'REF_AREA']
 
+### YIELD SPREAD WITH US
+spread_data = yields.copy()
+spread_data['OBS_VALUE_yield'] = pd.to_numeric(spread_data['OBS_VALUE_yield'], errors='coerce')
+# Get US yield for each time period
+us_yields = spread_data[spread_data['REF_AREA'] == 'US'][['OBS_VALUE_yield']].copy()
+us_yields.columns = ['US_yield']
+# Merge US yield back to all countries
+spread_data = spread_data.merge(us_yields, left_index=True, right_index=True, how='left')
+# Calculate yield spread (country yield - US yield)
+spread_data['yield_spread'] = spread_data['OBS_VALUE_yield'] - spread_data['US_yield']
+# Drop US observations and NaNs
+spread_data = spread_data[spread_data['REF_AREA'] != 'US'].dropna()
+spread_data = spread_data.sort_index()
+
 ### GDP
 
 HOST_URL = "https://sdmx.oecd.org/public/rest/data/"
