@@ -109,7 +109,7 @@ spot_usdaln = pd.read_csv('./data/DEXUSAL.csv', index_col='observation_date')  #
 spot_usdnzd = pd.read_csv('./data/DEXUSNZ.csv', index_col='observation_date')  # New Zealand
 spot_vesusd = pd.read_csv('./data/DEXVZUS.csv', index_col='observation_date')  # Venezuela
 
-# Convert to USD per foreign currency (inverse of foreign per USD, index_col='observation_date')
+# Convert to foreign currency per USD (index_col='observation_date')
 spot_eurusd = 1 / spot_usdeur
 spot_ukgusd = 1 / spot_usdukg
 spot_alnusd = 1 / spot_usdaln
