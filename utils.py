@@ -153,6 +153,17 @@ yields = pd.concat([
 ], axis=1)
 yields = yields.sort_index()
 yields = yields.dropna(how='any',axis=0)
+# Align format with other OECD data
+yields = pd.melt(
+    yields.reset_index(),
+    id_vars='observation_date'
+).set_index('observation_date')
+
+yields.index.name = 'TIME_PERIOD'
+yields['REF_AREA'] = yields['variable'].map(
+    {v: k for k, v in CC_NAME_MAPPING.items()}
+)
+yields.columns = ['Country', 'OBS_VALUE_yield', 'REF_AREA']
 
 ### GDP
 
@@ -234,7 +245,7 @@ priceleveldata.drop(columns=[
 ], inplace=True)
 
 # Only keep observations that report the inflation as a net percentage
-inflation = priceleveldata[priceleveldata['UNIT_MEASURE']=='PA']
+inflation = priceleveldata[priceleveldata['UNIT_MEASURE']=='PA'].copy()
 inflation.drop(columns="UNIT_MEASURE",inplace=True)
 
 inflation['REF_AREA'] = inflation['REF_AREA'].map(OECD_CODE_MAPPING)
@@ -246,7 +257,7 @@ inflation.index = inflation.index.astype(str) + '-01'
 
 ### PRICE INDICES
 # Only keep observations that report the inflation as a net percentage
-price_indices = priceleveldata[priceleveldata['UNIT_MEASURE']=='IX']
+price_indices = priceleveldata[priceleveldata['UNIT_MEASURE']=='IX'].copy()
 price_indices.drop(columns="UNIT_MEASURE",inplace=True)
 price_indices['REF_AREA'] = price_indices['REF_AREA'].map(OECD_CODE_MAPPING)
 price_indices = price_indices[~(price_indices['REF_AREA']).isna()]
@@ -265,7 +276,5 @@ goods_services = pd.read_csv('./data/IMF_IMTS.csv')
 
 ### Summary on countries analyzed -- given the objective of the exercise
 print('Yields are present for the following countries: ')
-print(', '.join(list(yields.columns.map(
-    {v: k for k, v in CC_NAME_MAPPING.items()}
-))))
+print(', '.join(list(yields['REF_AREA'].unique())))
 print('Only considering these ones in the analysis (data on other countries will be dropped.)')
