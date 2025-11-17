@@ -56,7 +56,9 @@ OECD_CODE_MAPPING = { # actually refers to some IMF codes as well
     "SGP" : "SG", # IMF
     "SGN" : "SG",
     "G163": "I9",
-    "G998": "EU"
+    "G998": "EU",
+    "G001": "W1", # IMF code
+    "W"   : "W1", # denotes all rest of the world
 }
 
 CC_NAME_MAPPING = {
@@ -324,6 +326,8 @@ trade_services["COUNTERPART_AREA"] = trade_services["COUNTERPART_AREA"].map(OECD
 trade_services = trade_services[~trade_services["REF_AREA"].isna() & ~trade_services["COUNTERPART_AREA"].isna()]
 
 trade_goods = pd.read_csv('./data/IMF_IMTS.csv')
+trade_goods = trade_goods.loc[~(trade_goods["TIME_PERIOD"].isna())]
+trade_goods = trade_goods.loc[~(trade_goods["OBS_VALUE"].isna())]
 # Keep exports FOB and imports CIF
 # (standard combination, only CIF considers freight costs)
 trade_goods = trade_goods[trade_goods["INDICATOR"].isin([
@@ -358,7 +362,7 @@ trade_goods.rename(columns={
 # ] = trade_goods.loc[trade_goods['SCALE'].isna(), 'OBS_VALUE'] / 1e6
 trade_goods.drop(columns=[
     'FREQUENCY', 'FREQUENCY.ID',
-    "SCALE", "SCALE.ID",  
+    "SCALE", "SCALE.ID",
 ], inplace=True)
 trade_goods["INDICATOR"] = trade_goods["INDICATOR"].map({
     'Exports of goods, Free on board (FOB), US dollar' : 'Exports FOB (USD)',
