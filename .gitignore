@@ -8,6 +8,8 @@ venv/
 *.out
 *.wordcount.tex
 *.synctex.gz
+*.tex
+*.pdf
 
 assets/
 data/
