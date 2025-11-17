@@ -2,6 +2,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{bbm}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{natbib}
@@ -21,127 +22,92 @@
 
 \maketitle
 
-\noindent\textbf{Word Count:} \wordcount{} / 800 words
+%\noindent\textbf{Word Count:} \wordcount{} / 800 words
 
-\vspace{0.3cm}
-
-\section{Introduction and theoretical framework}
-The United States still hold much weight in shaping the destinies of competing economies around the world. Spreads with their sovereign yields determine capital flows, and in turn financing capabilities and real economic expansions or contractions by influencing consumption and investment patterns. Economies who are more exposed to swings in currency trade with the US exhibit stronger vulnerabilities; this phenomenon has been found to be particularly salient for emerging markets (EM).
-
-The present quantitative analysis attempts to delve deeper into the topic. It relies on OECD and IMF for trade data; data on exchange rates and sovereign yield spreads was retrieved from the Federal Reserve's
-\href{https://fred.stlouisfed.org/}{\textcolor{blue}{\underline{FRED}}}.
-An intense and nontrivial data processing effort was undertaken to align sources and reporting formats.\footnote{For datasets for which portals offered this possibility, data was retrieved through API queries, with the added benefit of transparency. The queries can be found in the source code of the analysis, within the
+\section{Introduction and theoretical overview}
+The United States still hold much weight in shaping destinies of competing economies around the world. Spreads with their sovereign yield affect capital flows, and in turn financing capabilities and the real economy through asset prices. The present analysis attempts a survey on the topic.
+\footnote{This work relies on OECD and IMF for trade data; data on exchange rates and sovereign yield spreads was retrieved from the Federal Reserve's
+\href{https://fred.stlouisfed.org/}{\textcolor{blue}{\underline{FRED}}}. An intense, nontrivial data processing effort was undertaken to align sources and reporting formats. For datasets for which portals offered this possibility, data was retrieved through API queries, with the added benefit of transparency. The queries can be found in the source code of the analysis, within the
 \href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{pseudo-Online Appendix}}}.}
 
 \subsection{Transmission channels for exposure to US yields}
 For the present analysis, let's ignore sovereign default risk and denomination risks, assumed constant and negligible across periods. Figure \ref{fig:spreads} displays sovereign long-term yield spreads against the US.
 
-The key channel by which long-term yields influence other economies is the effect they have on bilateral exchange rates. This is implied by interest rates differentials; the log-form Uncovered Interest Parity condition states
+The key channel by which long-term yields influence other economies is the effect on bilateral exchange rates. This is implied by interest rates differentials; the log-form Uncovered Interest Parity condition states
 \begin{equation}
 USY_t \approx i_t^* + \mathbb{E}(e_t+1) - e_t 
 \end{equation}
-where $USY_t$ represents some \textbf{net} US long term yield, $i_t^*$ is the relevant foreign country's counterpart, and $e_t$ represents the effective USD premium required to acquire 1 unit of foreign currency in period $t$. It is important to recall this condition shall not be expected to hold in the data\footnote{We ignore for brevity the so-called Forward Premium Puzzle, which historically showed UIP often doesn't hold.} as it pertains to uncertain environments rather than certain, \emph{backward-looking} ones. Notwithstanding, for given expectations we may suppose spot FX markets will react to sovereign yield spread deviations.
+where $USY_t$ represents some \textbf{net} US long term yield, $i_t^*$ is the relevant foreign country's counterpart, and $e_t$ the effective USD premium required to acquire 1 unit of foreign currency in period $t$. It is important to recall this condition shall not be expected to hold in the data\footnote{We ignore for brevity the so-called Forward Premium Puzzle, which historically showed UIP often doesn't hold.} as it pertains to uncertain environments rather than certain, \emph{backward-looking} ones. Notwithstanding, for given expectations we may suppose spot FX markets will react to sovereign yield spread deviations.
 
 \begin{figure}\label{fig:spreads}
-\centering \includegraphics[scale=0.5]{assets/yield_spreads.png}
+\centering \includegraphics[scale=0.4]{assets/yield_spreads.png}
+\caption{Long term yield spreads are generally higher for emerging economies with strong US links, such as Mexico, Chile and South Africa}
 \end{figure}
+
+Theory suggests exchange rates shape terms of trade among countries and influence trade balances. In practice, this depends on the specific links each economy has with the US. The 2013 US ``taper tantrum'' provided evidence (e.g. Sahay \textit{et al.}, 2014) that EM economies are more vulnerable to US monetary tightenings: volatility increases, and exchange rates and asset prices react more sharply. Results showed the prospect of rate increases in U.S. 10-year yields translated to up to 300bp widenings in EM sovereign spreads for the most vulnerable economies. 
+
+This is consistent \textit{inter alia} with Dornbusch's (1976) now classic theory of \textit{Exchange Rate Overshooting}: a notable implication of the latter is that countries whose trade depends more heavily on the US as a partner, and who have greater financial exposure, will suffer more. We may tentatively explore data on trade patterns to verify whether the above deduction is broadly true. Unfortunately, insufficient granularity and aggregation inconsistencies across  available datasets make comparison complex: we must avoid mixing datasets built under heavily different assumptions, and accept limits imposed by metadata encoding. Nevertheless, some aggregations do offer significant information despite forcing us to restrict our attention to a limited number of countries.
 
 \begin{figure}\label{fig:spreads2}
-\centering \includegraphics[scale=0.5]{assets/yield_spreads2.png}
+\centering \includegraphics[scale=0.4]{assets/yield_spreads2.png}
+\caption{Emerging market economies have depreciated more against the dollar in recent years.}
 \end{figure}
-
-In turn, theory suggests exchange rates may shape terms of trade between countries and influence the trade balance. In practice, this depends on the specific links an economy has with the United States. The 2013 US ``taper tantrum'' provided quantitative evidence (see e.g. Sahay \textit{et al.}, 2014) that EM economies tend to be more vulnerable to US monetary tightenings: volatility increases, and exchange rates and asset prices react more sharply. Results showed the prospect of rate increases in U.S. 10-year yields translated to up to 300bp widenings in EM sovereign spreads for the most vulnerable economies. 
-
-This is consistent \textit{inter alia} with Dornbusch's (1976) now classic theory of \textit{Exchange Rate Overshooting}: a notable implication of the latter is that countries whose trade depends more heavily on the US as a partner, and who have greater financial exposure, will suffer more. We may tentatively explore data on trade patterns to verify whether the above deduction is broadly true. Unfortunately, insufficient granularity, low alignment, and widespread methodological inconsistencies across publicly available datasets make comparison more complex: we must avoid aggregating datasets built under heavily different assumptions, and accept limits imposed by asymmetric metadata encoding. Nevertheless, some aggregations offer significant information despite forcing us to restrict our attention to a limited number of countries.
-
-For instance, it can be seen in the data that years of USD appreciation tended to correlate with lower trade openness for market partners, both for exports and imports. This has particularly been the case for economies which exhibit a stronger penetration of the US economy in their trade basket. This is the case e.g. for Mexico: while international organizations do not have systematic and complete data on US penetration in Mexican trade, national figures report numbers up to $>80\%$ of total international trade.
-
-
-\begin{figure}\label{fig:uspenetrationtrade}
-\centering \includegraphics[scale=0.5]{assets/uspenetrationtrade.png}
-\end{figure}
-
-%missing
-
-%\begin{figure}\label{fig:er-shape-tradebalance}
-%\centering \includegraphics[scale=0.5]{assets/tradebalance.png}
-%\end{figure}
-
-%% insert graph plotting nominal and real ERs vs imports and exports
-
-Interestingly, a first exploratory plot of FRED data (Figure \ref{fig:spreads2}) shows USD has on average appreciated more sharply against EMs than vis-à-vis advanced economies over the past two decades. How much of this differential may be attributed to yield spreads?
-
-The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
-
-We can estimate the expected future exchange rate, combine that with the estimated inflation pass-through
-
-
-Countries are more exposed if
-\begin{itemize}
-\item Hold insufficient foreign exchange reserves, especially if the ratio is $\leq 100\%$ of short-term external debt
-\item If local currency bond markets are heavily USD-dependent
-\item Have relevant current account deficits ($>3\%$ of GDP)
-\item Do not have sufficiently credible flexible ER regimes
-\end{itemize}
 
 \section{Quantitative analysis}
-We begin with some very simple regressions
-$$
-\left( \dot{y}_t, \ \pi_t \right) = x_t \beta + FE_c + \varepsilon_t
-$$
+A first, exploratory plot of FRED data (Figure \ref{fig:spreads2}) shows USD has on average appreciated more sharply against EMs than vis-à-vis advanced economies over the past two decades. How much of this differential may be attributed to yield spreads?
 
-with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect. We also experiment with interaction terms to verify whether the reduced form relationship varies by country and this is significant. We present results in Figures \ref{fig:result_base1} and \ref{fig:result_base2}. %currently missing
+\begin{figure}\label{fig:mexico1}
+\centering \includegraphics[scale=0.45]{assets/mexico1.png}
+\caption{Mexico's openness to trade suffers with USD appreciations.}
+\end{figure}
 
-%\begin{figure}\label{fig:result_base1}
-%\centering \includegraphics[scale=0.5]{assets/growth_fe_interact_CC.png}
-%\end{figure}
-%\begin{figure}\label{fig:result_base2}
-%\centering \includegraphics[scale=0.5]{assets/inflation_fe_interact_CC.png}
-%\end{figure}
-
-The interested reader can consult the pseudo-``Online Appendix'' to the analysis \href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{here}}}.
-
-\section{AI SLOP}
-\subsection{Exchange Rate Pass-through}
-Currency depreciation following yield increases affects domestic conditions via:
+The starting point for the analysis were reduced-form regressions which estimate how economic activity and prices are impacted by yield spreads:
 \begin{equation}
-\pi_{i,t+1} = \gamma_0 + \gamma_1 \pi_{i,t} + \gamma_2 \Delta e_{i,t} + \gamma_3 \Delta USY_t + u_{i,t}
+\left( \dot{y}_t, y_t, \pi_t, p_t \right) = \text{spread}_{c,t} \beta + FE_c + \varepsilon_t
 \end{equation}
+with $y$ representing output, $\pi$ inflation, and $p$ the price level. $FE_c$ is a country fixed effect. Spread shall be understood as denoting the difference between the yield offered by a bond issued by country $c$ and the US one. Exploratory regressions already highlight an interesting fact: while spread deviations do not bear significant effects on growth, they tend to have stronger effect on inflation and price levels.
 
-where $\pi_{i,t}$ is inflation, $\Delta e_{i,t}$ represents exchange rate depreciation, establishing the link between U.S. monetary conditions and domestic price stability.
+\begin{figure}\label{fig:mexico2}
+\centering \includegraphics[scale=0.45]{assets/mexico2.png}
+\caption{Mexico's trade balance grows when USD becomes more expensive.}
+\end{figure}
 
-\section{Empirical Analysis}
+The specification was then augmented to explore (i) whether USD appreciations or depreciations modify the impact of yield spreads on the dependent variables and (ii) the interaction between trade openness, US penetration in a country's trade activity, and the impact of spreads, to verify the extent to which a country's dependence on the US affects volatility following spread deviations.
+\begin{align}
+\left( \dot{y}_t,\, y_t,\, \pi_t,\, p_t \right)
+& = \text{MODEL(2)}
++ \sum_{c} \mathbbm{1}_c \gamma_c\, \text{spread}_{c,t}
++ \delta\, \text{openness}_{c,t} \nonumber\\
+& + \nu\, \text{US\_trade\_penetration}_{c,t}
++ \phi\, \text{US\_trade\_penetration}_{c,t} \text{spread}_{c,t} \nonumber\\
+& + \psi\, \text{openness}_{c,t} \text{spread}_{c,t}
+\end{align}
 
-\subsection{Most Vulnerable Economies}
+It can be verified that times of USD appreciation bring to lower trade openness for market partners, especially for imports. This has particularly been the case for economies which exhibit a stronger penetration of the US economy in their trade basket. The starkest example is Mexico: while international organizations do not have systematic and complete data on US penetration in Mexican trade, national figures report numbers up to $>80\%$ of total international trade. This is consistent with regressions reported in the Appendix below, which show a very strong \emph{and significant} effect of spread with the US for Mexico.
 
-Based on quantitative assessment using 2023 data:
+One should note that exchange rate risk also generally varies depending on current account imbalances. A strong current account deficit may imply stronger financing needs for an economy, and this may prove especially painful for dollarized economies or those holding large amounts of foreign-denominated financial instruments (Gopinath \emph{et al.}, 2020).
+The interested reader can consult the pseudo-``Online Appendix'' for a more extensive analysis \href{https://github.com/teopozzii/yields}{\textcolor{blue}{\underline{here}}}.
 
-\textbf{High Exposure Tier:}
-\begin{itemize}
-\item \textbf{Turkey}: External debt 55\% of GDP, current account deficit 4.5\% of GDP, significant USD borrowing
-\item \textbf{Argentina}: Debt sustainability concerns, limited reserves, high inflation pass-through
-\item \textbf{South Africa}: Twin deficits, reliance on portfolio flows, commodity dependence
-\end{itemize}
+\begin{figure}\label{fig:uspenetrationtrade}
+\centering \includegraphics[scale=0.4]{assets/uspenetrationtrade.png}
+\caption{Developed countries do not all depend on trade with the US to the same extent. Canada has been voluntarily omitted, as it would distort the scale of the graph.}
+\end{figure}
 
-\textbf{Medium-High Exposure:}
-\begin{itemize}
-\item \textbf{Indonesia}: Current account sensitivity, significant foreign ownership of government bonds
-\item \textbf{Brazil}: Large domestic bond market with foreign participation, currency volatility
-\end{itemize}
+\section{Qualitative considerations and conclusion}
 
-\section{Conclusion}
-
-Economies with high external financing needs, significant USD-denominated debt, and weak fundamentals face the greatest exposure to rising U.S. yields. Turkey, Argentina, and South Africa emerge as particularly vulnerable, while countries with stronger external positions and deeper local markets demonstrate greater resilience.
+Beyond the above results, we highlight that countries are more exposed to swings in the US sovereign yield if they hold insufficient foreign exchange reserves, if local currency bond markets are heavily USD-dependent, or they have large current account deficits and are dollar-indebted. A qualitative assessment of summary data based on the above suggests that, other than Mexico, Turkey, Argentina, and South Africa emerge as particularly vulnerable, while countries with stronger external positions, deeper local markets, and a more diversified trade network will prove more resilient.
 
 \section{References}
 
-Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal of Political Economy, 84}(6), pp. 1161-1176. doi:\href{https://doi.org/10.1086/260506}{10.1086/260506}\\
+Gopinath, G., Boz, E., Casas, C., Díez, F.J., Gourinchas, P., \& Plagborg-Møller, M. (2020). Dominant Currency Paradigm. \textit{American Economic Review 110}(3), pp. 677–719. \\ doi: \href{https://doi.org/10.1257/aer.20171201}{10.1257/aer.20171201}\\
+
+\noindent Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal of Political Economy, 84}(6), pp. 1161-1176. doi:\href{https://doi.org/10.1086/260506}{10.1086/260506}\\
 
 \noindent Sahay, R., Arora, V. B., Arvanitis, A. V., Faruqee, H., N'Diaye, P. M., \& Mancini Griffoli, T. (2014). Emerging Market Volatility: Lessons from The Taper Tantrum. \textit{Staff Discussion Notes, 2014}(009), A001. doi:\href{https://doi.org/10.5089/9781498318204.006}{10.5089/9781498318204.006}
 
 \newpage
 \section{Appendix - effects of yield spread on economic outcomes}
-\subsection{Regression with interaction terms and country fixed effects}
+\subsection{Country fixed effects with interaction terms}
 \begin{table}[!htbp] \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{\extracolsep{0pt}}lcccc}
@@ -193,10 +159,10 @@ Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal o
 \end{table}
 
 \newpage
-\subsection{Incorporate the effect of US relative appreciation rate}
+\subsection{Effect of the US relative appreciation rate}
 \begin{table}[!htbp] \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{\extracolsep{5pt}}lcccc}
+\begin{tabular}{@{\extracolsep{0pt}}lcccc}
 \\[-1.8ex]\hline
 \hline \\[-1.8ex]
 \\[-1.8ex] & (1) & (2) & (3) & (4) \\
@@ -235,46 +201,143 @@ Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal o
 \end{table}
 
 \newpage
-\subsection{Combine appreciation rate with interaction terms}
+\subsection{Combination of appreciation rate and interaction terms}
 \begin{table}[!htbp] \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{\extracolsep{5pt}}lcccc}
+\begin{tabular}{@{\extracolsep{0pt}}lcccc}
 \\[-1.8ex]\hline
 \hline \\[-1.8ex]
 \\[-1.8ex] & (1) & (2) & (3) & (4) \\
  & GDP Growth & GDP Levels & Inflation & Price Index \\
 \hline \\[-1.8ex]
- OBS\_VALUE\_USappr\_rate & -9.864$^{***}$ & 924983.488$^{**}$ & -1.196$^{***}$ & 4.044 \\
-& (3.722) & (465892.170) & (0.456) & (5.264) \\
- Openness & -0.962 & -730858.946 & -1.809$^{***}$ & -15.502$^{***}$ \\
-& (4.619) & (560590.278) & (0.511) & (5.841) \\
- REF\_AREA\_CA & -1.394 & 532286.627$^{***}$ & 0.196 & \\
-& (1.606) & (200658.564) & (0.207) & \\
- REF\_AREA\_CH & -0.228 & -118350.091 & 0.481 & 19.324$^{***}$ \\
-& (5.311) & (660295.193) & (0.604) & (5.396) \\
- REF\_AREA\_JP & -4.973$^{***}$ & 3537044.688$^{***}$ & -1.503$^{***}$ & 0.423 \\
-& (1.720) & (216148.294) & (0.232) & (2.277) \\
- REF\_AREA\_KR & -0.776 & 888670.191$^{***}$ & -0.056 & -5.252$^{***}$ \\
-& (1.230) & (154475.210) & (0.172) & (1.540) \\
- REF\_AREA\_MX & 1.522 & 1208938.480$^{***}$ & -0.049 & -19.126$^{***}$ \\
-& (2.407) & (303100.200) & (0.302) & (4.483) \\
- REF\_AREA\_NZ & 0.042 & -907158.093$^{***}$ & & \\
-& (1.159) & (145799.044) & & \\
- const & 6.764$^{***}$ & 1579735.575$^{***}$ & 3.283$^{***}$ & 110.304$^{***}$ \\
-& (2.282) & (277059.657) & (0.277) & (4.091) \\
- yield\_spread & -0.585 & -65547.799 & 0.425$^{***}$ & 3.181$^{***}$ \\
-& (0.486) & (61318.198) & (0.060) & (0.702) \\
+ OBS\_VALUE\_USappr\_rate & -10.261$^{***}$ & 955634.319$^{**}$ & -0.958$^{**}$ & 9.668$^{**}$ \\
+& (3.882) & (451235.032) & (0.460) & (4.754) \\
+ Openness & -1.782 & -244203.143 & -0.852 & 10.749$^{*}$ \\
+& (5.024) & (577851.675) & (0.555) & (5.728) \\
+ REF\_AREA\_CA & -0.963 & 178312.837 & -0.389 & \\
+& (2.024) & (234539.707) & (0.263) & \\
+ REF\_AREA\_CA\_x\_spread & 1.824 & -161109.663 & -0.247 & \\
+& (3.068) & (356919.450) & (0.332) & \\
+ REF\_AREA\_CH & 3.672 & -795256.273 & -2.673$^{***}$ & -8.360 \\
+& (8.508) & (958357.299) & (0.903) & (7.957) \\
+ REF\_AREA\_CH\_x\_spread & 1.719 & 194039.450 & -0.644$^{**}$ & 12.710$^{***}$ \\
+& (2.760) & (284747.545) & (0.281) & (3.620) \\
+ REF\_AREA\_JP & -7.015$^{**}$ & 3376616.800$^{***}$ & -2.823$^{***}$ & 6.899$^{*}$ \\
+& (2.911) & (338603.978) & (0.357) & (3.631) \\
+ REF\_AREA\_JP\_x\_spread & -0.634 & 185516.155 & -0.237 & 15.271$^{***}$ \\
+& (1.520) & (176838.693) & (0.219) & (3.208) \\
+ REF\_AREA\_KR & -0.952 & 843899.574$^{***}$ & -0.531$^{**}$ & 7.666$^{***}$ \\
+& (1.598) & (185664.228) & (0.226) & (1.650) \\
+ REF\_AREA\_KR\_x\_spread & 0.392 & -116008.697 & 0.541$^{***}$ & 6.894$^{**}$ \\
+& (1.429) & (166270.627) & (0.198) & (3.047) \\
+ REF\_AREA\_MX & -0.267 & -608721.805 & -1.727$^{***}$ & -62.921$^{***}$ \\
+& (4.620) & (537441.334) & (0.486) & (4.954) \\
+ REF\_AREA\_MX\_x\_spread & 0.510 & 581407.755$^{***}$ & 0.660$^{***}$ & 30.638$^{***}$ \\
+& (1.404) & (163254.455) & (0.197) & (3.060) \\
+ REF\_AREA\_NZ & 0.037 & -1187362.554$^{***}$ & & \\
+& (1.798) & (209119.924) & & \\
+ REF\_AREA\_NZ\_x\_spread & 0.109 & 271139.622$^{*}$ & & \\
+& (1.377) & (160182.991) & & \\
+ const & 7.310$^{***}$ & 1511203.628$^{***}$ & 3.077$^{***}$ & 87.950$^{***}$ \\
+& (2.540) & (292841.574) & (0.317) & (4.133) \\
+ yield\_spread & -0.754 & -277430.957$^{**}$ & 0.095 & -15.238$^{***}$ \\
+& (1.044) & (121412.834) & (0.173) & (2.920) \\
 \hline \\[-1.8ex]
  Observations & 135 & 136 & 1165 & 1081 \\
- $R^2$ & 0.133 & 0.920 & 0.587 & 0.026 \\
- Adjusted $R^2$ & 0.070 & 0.915 & 0.584 & 0.020 \\
- Residual Std. Error & 3.615 (df=125) & 456286.122 (df=126) & 1.286 (df=1156) & 14.310 (df=1073) \\
- F Statistic & 2.124$^{**}$ (df=9; 125) & 161.623$^{***}$ (df=9; 126) & 205.219$^{***}$ (df=8; 1156) & 4.127$^{***}$ (df=7; 1073) \\
+ $R^2$ & 0.143 & 0.933 & 0.607 & 0.253 \\
+ Adjusted $R^2$ & 0.035 & 0.925 & 0.603 & 0.245 \\
+ Residual Std. Error & 3.684 (df=119) & 428637.369 (df=120) & 1.256 (df=1151) & 12.557 (df=1069) \\
+ F Statistic & 1.320 (df=15; 119) & 111.406$^{***}$ (df=15; 120) & 136.891$^{***}$ (df=13; 1151) & 32.907$^{***}$ (df=11; 1069) \\
 \hline
 \hline \\[-1.8ex]
 \textit{Note:} & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\
 \end{tabular}}
 \end{table}
-%%%%%%%%%%%%%%% END OF REGRESSION TABLE
+
+\newpage
+\subsection{Penetration rate and yield spread -- interaction not significant}
+\begin{table}[!htbp] \centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{\extracolsep{0pt}}lcccc}
+\\[-1.8ex]\hline
+\hline \\[-1.8ex]
+\\[-1.8ex] & (1) & (2) & (3) & (4) \\
+ & GDP Growth & GDP Levels & Inflation & Price Index \\
+\hline \\[-1.8ex]
+ OBS\_VALUE\_USappr\_rate & -8.604$^{*}$ & 530022.305 & 0.682 & 26.433$^{***}$ \\
+& (4.934) & (477335.669) & (0.798) & (5.345) \\
+ Openness & -2.007 & -614522.663 & -0.251 & -30.619$^{***}$ \\
+& (6.010) & (581468.088) & (0.854) & (5.503) \\
+ REF\_AREA\_CA & -0.627 & 3493877.768$^{***}$ & -1.270 & \\
+& (13.101) & (1267560.394) & (1.580) & \\
+ REF\_AREA\_JP & -5.201$^{**}$ & 3847727.944$^{***}$ & -1.333$^{***}$ & -112.161$^{***}$ \\
+& (2.528) & (244547.937) & (0.356) & (8.891) \\
+ REF\_AREA\_KR & -0.750 & 1075043.976$^{***}$ & -0.289 & -95.765$^{***}$ \\
+& (1.643) & (158922.456) & (0.233) & (8.911) \\
+ REF\_AREA\_NZ & 0.217 & -763208.321$^{***}$ & & \\
+& (1.273) & (123141.710) & & \\
+ US penetration & -0.584 & -6142861.448$^{**}$ & 1.935 & -198.866$^{***}$ \\
+& (24.118) & (2333453.872) & (2.919) & (18.030) \\
+ const & 7.475$^{*}$ & 2288187.914$^{***}$ & 2.338$^{***}$ & 242.980$^{***}$ \\
+& (4.186) & (405041.434) & (0.558) & (12.393) \\
+ spread\_x\_uspen & 3.352 & -495220.684 & -1.031 & 2.169 \\
+& (5.226) & (505591.065) & (0.647) & (4.127) \\
+ yield\_spread & -1.084 & -207107.131$^{**}$ & 0.494$^{***}$ & -8.012$^{***}$ \\
+& (0.958) & (92671.240) & (0.146) & (1.026) \\
+\hline \\[-1.8ex]
+ Observations & 92 & 92 & 666 & 582 \\
+ $R^2$ & 0.141 & 0.958 & 0.175 & 0.405 \\
+ Adjusted $R^2$ & 0.047 & 0.954 & 0.165 & 0.398 \\
+ Residual Std. Error & 3.510 (df=82) & 339559.016 (df=82) & 1.386 (df=657) & 8.375 (df=574) \\
+ F Statistic & 1.497 (df=9; 82) & 209.965$^{***}$ (df=9; 82) & 17.437$^{***}$ (df=8; 657) & 55.792$^{***}$ (df=7; 574) \\
+\hline
+\hline \\[-1.8ex]
+\textit{Note:} & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\
+\end{tabular}}
+\end{table}
+
+\newpage
+\subsection{Interaction between trade openness and yield spread -- partially significant}
+\begin{table}[!htbp] \centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{\extracolsep{0pt}}lcccc}
+\\[-1.8ex]\hline
+\hline \\[-1.8ex]
+\\[-1.8ex] & (1) & (2) & (3) & (4) \\
+ & GDP Growth & GDP Levels & Inflation & Price Index \\
+ \hline \\[-1.8ex]
+ OBS\_VALUE\_USappr\_rate & -9.504$^{**}$ & 973602.464$^{**}$ & -1.163$^{**}$ & 4.842 \\
+& (3.728) & (461129.123) & (0.456) & (5.237) \\
+ Openness & -2.487 & -1107566.881$^{*}$ & -1.995$^{***}$ & -20.168$^{***}$ \\
+& (4.785) & (585398.436) & (0.525) & (5.943) \\
+ REF\_AREA\_CA & -0.996 & 625172.414$^{***}$ & 0.246 & \\
+& (1.638) & (203725.320) & (0.210) & \\
+ REF\_AREA\_CH & 5.733 & 1143565.557 & 1.263 & 39.016$^{***}$ \\
+& (7.276) & (909036.316) & (0.797) & (7.570) \\
+ REF\_AREA\_JP & -6.066$^{***}$ & 3306449.663$^{***}$ & -1.637$^{***}$ & -4.463$^{*}$ \\
+& (1.945) & (242924.845) & (0.248) & (2.623) \\
+ REF\_AREA\_KR & -0.769 & 896593.909$^{***}$ & -0.057 & -6.617$^{***}$ \\
+& (1.228) & (152733.783) & (0.172) & (1.575) \\
+ REF\_AREA\_MX & 2.838 & 1468520.103$^{***}$ & 0.138 & -15.283$^{***}$ \\
+& (2.643) & (326638.648) & (0.326) & (4.577) \\
+ REF\_AREA\_NZ & -0.077 & -926644.759$^{***}$ & & \\
+& (1.161) & (144437.553) & & \\
+ const & 7.465$^{***}$ & 1754978.390$^{***}$ & 3.368$^{***}$ & 113.712$^{***}$ \\
+& (2.353) & (287597.682) & (0.283) & (4.170) \\
+ spread\_x\_openness & 2.402 & 489487.281$^{**}$ & 0.330 & 9.000$^{***}$ \\
+& (2.009) & (245453.445) & (0.219) & (2.441) \\
+ yield\_spread & -1.824 & -317516.162$^{**}$ & 0.255$^{**}$ & -1.476 \\
+& (1.144) & (140133.331) & (0.128) & (1.443) \\
+\hline \\[-1.8ex]
+ Observations & 135 & 136 & 1165 & 1081 \\
+ $R^2$ & 0.143 & 0.923 & 0.588 & 0.038 \\
+ Adjusted $R^2$ & 0.073 & 0.917 & 0.584 & 0.031 \\
+ Residual Std. Error & 3.609 (df=124) & 450989.642 (df=125) & 1.285 (df=1155) & 14.227 (df=1072) \\
+ F Statistic & 2.062$^{**}$ (df=10; 124) & 149.295$^{***}$ (df=10; 125) & 182.867$^{***}$ (df=9; 1155) & 5.353$^{***}$ (df=8; 1072) \\
+\hline
+\hline \\[-1.8ex]
+\textit{Note:} & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\
+\end{tabular}}
+\end{table}
 
 \end{document}
