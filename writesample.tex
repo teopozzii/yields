@@ -7,6 +7,7 @@
 \usepackage{natbib}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{xcolor}
 
 % Word count functionality
 \immediate\write18{texcount -tex -sum -1 \jobname.tex > \jobname.wordcount.tex}
@@ -24,15 +25,12 @@
 
 \vspace{0.3cm}
 
-\section{Introduction}
-The United States still hold much weight in shaping the destiny of competing economies around the world. Among other things [replace word], spreads with their sovereign yields determine capital flows, and in turn financing capabilities and real economic expansions or contractions (due to modified consumption and investment patterns -- shorten this part). Emerging market (EM) economies exhibit stronger vulnerabilities. This analysis quantitatively examines which economies are most exposed to U.S. yield increases. The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
+\section{Introduction and Theoretical Framework}
+The United States still hold much weight in shaping the destinies of competing economies around the world. Spreads with their sovereign yields determine capital flows, and in turn financing capabilities and real economic expansions or contractions by influencing consumption and investment patterns. Economies who are more exposed to swings in currency trade with the US exhibit stronger vulnerabilities; this is particularly the case for emerging markets (EM).
 
-The idea is not to analyze the impact on a single unique variable (inflation or capital flow) but consider the extent to which 
-
-\section{Theoretical Framework}
-The log-form Uncovered Interest Parity condition states
+The key channel by which long-term yields influence other economies is the effect they have on bilateral exchange rates. The log-form Uncovered Interest Parity condition states
 \begin{equation}
-USY_t \approx i_t^* + e_t - \mathbb{E}(e_t+1)
+USY_t \approx i_t^* + \mathbb{E}(e_t+1) - e_t 
 \end{equation}
 where
 \begin{itemize}
@@ -40,21 +38,21 @@ where
 \item $i_t^*$ is the relevant foreign country's counterpart
 \item $e_t$ represents effective USD premium to acquire 1 unit of foreign currency in period $t$
 \end{itemize}
-For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across the pre- and post- shock periods.
-Approximate in logs
+For a simple \textit{ceteris paribus} analysis let's ignore sovereign default risk and denomination risk, assumed constant across periods. Let's see if it holds in the data.
 
+The UIP condition is used to derive expected changes in the effective exchange rate (EER) of an economy, with those most exposed to the US economy receiving stronger effects. The analysis is carried out accounting for the relevance of exchange rate risk based on current/financial account imbalances. A linear model is tested against the theory and optimized for reliability. In the end, we propose a short ML alternative to compare performance.
 
 We can estimate the expected future exchange rate, combine that with the estimated inflation pass-through
 
 \subsection{Estimation}
-We begin with two very simple regressions
+We begin with some very simple regressions
 $$
-\dot{y}_t = x_t \beta + FE_c + \varepsilon_t
-$$$$
-\pi_t = x_t \beta + FE_c + \varepsilon_t
+\left( \dot{y}_t, \ \pi_t \right) = x_t \beta + FE_c + \varepsilon_t
 $$
 
 with $\dot{y}$ representing output growth, $\pi$ inflation, and $x$ a multivariate vector containing a constant term and the spread with the US sovereign. $FE_c$ is a country fixed effect.
+
+The interested reader can consult the pseudo-``online appendix'' to the analysis \href{https://doi.org/10.82029/2025014}{\textcolor{blue}{\underline{here}}}.
 
 \section{AI SLOP}
 \subsection{Exchange Rate Pass-through}
