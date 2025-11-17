@@ -9,5 +9,6 @@ venv/
 *.wordcount.tex
 *.synctex.gz
 
+assets/
 data/
 other/
