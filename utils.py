@@ -40,7 +40,9 @@ OECD_CODE_MAPPING = {
     "CHL" : "CL",
     "ESP" : "ES",
     "FRA" : "FR",
-    "ISR" : "IL"
+    "ISR" : "IL",
+    "G163": "I9",
+    "G998": "EU"
 }
 
 CC_NAME_MAPPING = {
@@ -286,7 +288,13 @@ url = HOST_URL + agency_identifier + "," + \
     "format=csvfilewithlabels"
 resp = requests.get(url)
 trade_services = pd.read_csv(StringIO(resp.text))
-goods_services = pd.read_csv('./data/IMF_IMTS.csv')
+trade_goods = pd.read_csv('./data/IMF_IMTS.csv')
+
+# Could also try with the IMF API, but the query structure is a bit more complex
+# HOST_URL_IMF = "https://api.imf.org/external/sdmx/3.0/data/"
+# url = f"{HOST_URL_IMF}{context}/" + \
+#       f"{agencyID}/{resourceID}/{version}/" + \
+#       f"{key}[?c][&updatedAfter][&firstNObservations][&lastNObservations][&dimensionAtObservation][&attributes][&measures][&includeHistory][&asOf]"
 
 ### Summary on countries analyzed -- given the objective of the exercise
 print('Yields are present for the following countries: ')
