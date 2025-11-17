@@ -54,13 +54,14 @@ In turn, theory suggests exchange rates may shape terms of trade between countri
 
 This is consistent \textit{inter alia} with Dornbusch's (1976) now classic theory of \textit{Exchange Rate Overshooting}: a notable implication of the latter is that countries whose trade depends more heavily on the US as a partner, and who have greater financial exposure, will suffer more. We may tentatively explore data on trade patterns to verify whether the above deduction is broadly true. Unfortunately, insufficient granularity, low alignment, and widespread methodological inconsistencies across publicly available datasets make comparison more complex: we must avoid aggregating datasets built under heavily different assumptions, and accept limits imposed by asymmetric metadata encoding. Nevertheless, some aggregations offer significant information despite forcing us to restrict our attention to a limited number of countries.
 
-For instance, it can be seen in the data that years of USD appreciation tended to correlate with lower trade openness for market partners, both for exports and imports. This has particularly been the case for economies which exhibit a stronger penetration of the US economy in their trade basket.
+For instance, it can be seen in the data that years of USD appreciation tended to correlate with lower trade openness for market partners, both for exports and imports. This has particularly been the case for economies which exhibit a stronger penetration of the US economy in their trade basket. This is the case e.g. for Mexico: while international organizations do not have systematic and complete data on US penetration in Mexican trade, national figures report numbers up to $>80\%$ of total international trade.
+
 
 \begin{figure}\label{fig:uspenetrationtrade}
 \centering \includegraphics[scale=0.5]{assets/uspenetrationtrade.png}
 \end{figure}
 
-This is the case e.g. for Mexico, see Figure \ref{fig:er-shape-tradebalance}. %missing
+%missing
 
 %\begin{figure}\label{fig:er-shape-tradebalance}
 %\centering \includegraphics[scale=0.5]{assets/tradebalance.png}
@@ -109,24 +110,6 @@ Currency depreciation following yield increases affects domestic conditions via:
 
 where $\pi_{i,t}$ is inflation, $\Delta e_{i,t}$ represents exchange rate depreciation, establishing the link between U.S. monetary conditions and domestic price stability.
 
-\section{Vulnerability Metrics}
-
-\subsection{Financial Vulnerability Index}
-A composite vulnerability score can be constructed as:
-\begin{equation}
-V_i = w_1 \cdot FD_i + w_2 \cdot CA_i + w_3 \cdot RES_i + w_4 \cdot DEBT_i
-\end{equation}
-
-where:
-\begin{itemize}
-\item $FD_i$ = Foreign debt-to-GDP ratio
-\item $CA_i$ = Current account deficit-to-GDP ratio  
-\item $RES_i$ = Reserves-to-short-term debt ratio (inverted)
-\item $DEBT_i$ = USD-denominated debt share
-\end{itemize}
-
-Higher sensitivity indicates greater exposure to U.S. monetary tightening.
-
 \section{Empirical Analysis}
 
 \subsection{Most Vulnerable Economies}
@@ -155,5 +138,58 @@ Economies with high external financing needs, significant USD-denominated debt, 
 Dornbusch, R. (1976). Expectations and Exchange Rate Dynamics. \textit{Journal of Political Economy, 84}(6), pp. 1161-1176. doi:\href{https://doi.org/10.1086/260506}{10.1086/260506}\\
 
 \noindent Sahay, R., Arora, V. B., Arvanitis, A. V., Faruqee, H., N'Diaye, P. M., \& Mancini Griffoli, T. (2014). Emerging Market Volatility: Lessons from The Taper Tantrum. \textit{Staff Discussion Notes, 2014}(009), A001. doi:\href{https://doi.org/10.5089/9781498318204.006}{10.5089/9781498318204.006}
+
+\newpage
+\section{Appendix - effects of yield spread on economic outcomes}
+\begin{table}[!htbp] \centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{\extracolsep{0pt}}lcccc}
+\\[-1.8ex]\hline
+\hline \\[-1.8ex]
+\\[-1.8ex] & (1) & (2) & (3) & (4) \\
+ & GDP Growth & GDP Levels & Inflation & Price Index \\
+ \hline \\[-1.8ex]
+ Openness & & -353887.303 & -0.763 & 9.748$^{*}$ \\
+& & (583755.648) & (0.554) & (5.715) \\
+ REF\_AREA\_CA & -0.858 & 154578.365 & -0.359 & \\
+& (1.627) & (237621.712) & (0.263) & \\
+ REF\_AREA\_CA\_x\_spread & 2.095 & -188816.800 & -0.218 & \\
+& (3.121) & (361779.844) & (0.333) & \\
+ REF\_AREA\_CH & -0.416 & -454760.948 & -2.985$^{***}$ & -4.797 \\
+& (5.597) & (958284.504) & (0.892) & (7.773) \\
+ REF\_AREA\_CH\_x\_spread & 0.499 & 316732.961 & -0.764$^{***}$ & 14.223$^{***}$ \\
+& (2.747) & (282778.243) & (0.276) & (3.548) \\
+ REF\_AREA\_JP & -6.251$^{**}$ & 3308695.380$^{***}$ & -2.795$^{***}$ & 6.875$^{*}$ \\
+& (2.942) & (341901.727) & (0.357) & (3.636) \\
+ REF\_AREA\_JP\_x\_spread & -0.753 & 198885.306 & -0.276 & 15.948$^{***}$ \\
+& (1.537) & (179253.033) & (0.219) & (3.196) \\
+ REF\_AREA\_KR & -0.816 & 824984.820$^{***}$ & -0.509$^{**}$ & 7.730$^{***}$ \\
+& (1.528) & (188101.074) & (0.226) & (1.652) \\
+ REF\_AREA\_KR\_x\_spread & -0.142 & -66335.527 & 0.491$^{**}$ & 7.681$^{**}$ \\
+& (1.444) & (166961.762) & (0.197) & (3.027) \\
+ REF\_AREA\_MX & -0.602 & -572231.319 & -1.767$^{***}$ & -62.257$^{***}$ \\
+& (4.688) & (544846.123) & (0.486) & (4.950) \\
+ REF\_AREA\_MX\_x\_spread & 0.325 & 601567.322$^{***}$ & 0.639$^{***}$ & 31.128$^{***}$ \\
+& (1.404) & (165307.146) & (0.197) & (3.055) \\
+ REF\_AREA\_NZ & -0.012 & -1184846.249$^{***}$ & & \\
+& (1.825) & (212106.758) & & \\
+ REF\_AREA\_NZ\_x\_spread & -0.045 & 284570.048$^{*}$ & & \\
+& (1.402) & (162346.110) & & \\
+ const & 6.151$^{***}$ & 1593898.399$^{***}$ & 3.004$^{***}$ & 88.471$^{***}$ \\
+& (1.166) & (294376.674) & (0.316) & (4.131) \\
+ yield\_spread & -0.457 & -308420.899$^{**}$ & 0.127 & -15.842$^{***}$ \\
+& (1.014) & (122251.267) & (0.173) & (2.909) \\
+\hline \\[-1.8ex]
+ Observations & 135 & 136 & 1165 & 1081 \\
+ $R^2$ & 0.092 & 0.930 & 0.606 & 0.250 \\
+ Adjusted $R^2$ & -0.005 & 0.922 & 0.602 & 0.243 \\
+ Residual Std. Error & 3.759 (df=121) & 434766.562 (df=121) & 1.258 (df=1152) & 12.576 (df=1070) \\
+ F Statistic & 0.945 (df=13; 121) & 115.711$^{***}$ (df=14; 121) & 147.509$^{***}$ (df=12; 1152) & 35.679$^{***}$ (df=10; 1070) \\
+\hline
+\hline \\[-1.8ex]
+\textit{Note:} & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\
+\end{tabular}}
+\end{table}
+%%%%%%%%%%%%%%% END OF REGRESSION TABLE
 
 \end{document}
